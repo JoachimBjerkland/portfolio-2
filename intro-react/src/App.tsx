@@ -1,33 +1,78 @@
-import React from 'react';
-import Header from './Header';       // Anta at Header-komponenten er definert
-import Experience from './Experience'; // Anta at Experience-komponenten er definert
-import Contact from './Contact';     // Anta at Contact-komponenten er definert
+import { useState } from "react";
+import Streaks from "./Streaks";
+import Welcome from "./Welcome";
+import Habits from "./Habits";
+import type { Action, Habit as HabitType, Streak as StreakType } from "./types";
+import { ofetch } from "ofetch";
 
-// Experiences-komponenten definert utenfor App
-function Experiences({ experienceOne, experienceTwo }: { experienceOne: string, experienceTwo: string }) {
-  return (
-    <div>
-      <Experience description={experienceOne} />
-      <Experience description={experienceTwo} />
-    </div>
-  );
-}
+const user = {
+  name: "Alfred",
+  age: 20,
+};
 
-// Hoved App-komponent
 function App() {
-  const student = 'Halgeir Geirson';
-  const degree = 'Bachelor IT';
-  const points = 180;
-  const experienceOne = 'Figma UI for customer X';
-  const experienceTwo = 'Website for customer Y';
-  const email = 'student@hiof.no';
+  const [streaks, setStreaks] = useState<StreakType[]>([]);
+  const [habits, setHabits] = useState<HabitType[]>([]);
+
+  ofetch("http://localhost:3000/habits").then((res) => {
+    console.log("data fetched", res);
+  });
+
+  const add = (habit: HabitType) => {
+    setHabits((prev) => [...prev, habit]);
+    setStreaks((prev) => [
+      ...prev,
+      { id: crypto.randomUUID(), habitId: habit.id, streakCount: 0 },
+    ]);
+  };
+
+  const remove = (id: string) => {
+    setHabits((prev) => prev.filter((habit) => habit.id !== id));
+    setStreaks((prev) => prev.filter((streak) => streak.habitId !== id));
+  };
+
+  const handleHabitMutation = (action: Action, habit: HabitType) => {
+    switch (action) {
+      case "add":
+        add(habit);
+        break;
+      case "remove":
+        remove(habit.id);
+        break;
+      default:
+        break;
+    }
+  };
+
+  const updateStreakCount = (id: string) => {
+    setStreaks((prevStreaks) =>
+      prevStreaks.map((streak) => {
+        if (streak.id === id) {
+          return { ...streak, streakCount: streak.streakCount + 1 };
+        }
+        return streak;
+      })
+    );
+  };
+
+  const calculateTotalStreaks = () => {
+    let total = 0;
+    for (const streak of streaks) {
+      total += streak.streakCount;
+    }
+    return total;
+  };
 
   return (
-    <div>
-      <Header student={student} degree={degree} points={points} />
-      <Experiences experienceOne={experienceOne} experienceTwo={experienceTwo} />
-      <Contact email={email} />
-    </div>
+    <main>
+      <Welcome user={user} />
+      <Streaks
+        streaks={streaks}
+        updateStreakCount={updateStreakCount}
+        total={calculateTotalStreaks()}
+      />
+      <Habits habits={habits} handleHabitMutation={handleHabitMutation} />
+    </main>
   );
 }
 
