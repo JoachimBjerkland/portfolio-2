@@ -1,13 +1,41 @@
-function App() {
-  console.log('Console log i App');
+import React from 'react';
+import Header from './Header';       // Anta at Header-komponenten er definert
+import Experience from './Experience'; // Anta at Experience-komponenten er definert
+import Contact from './Contact';     // Anta at Contact-komponenten er definert
+import Projects from './Projects';   // Importer Projects-komponenten
 
-  const name = "Alfred";
-  const age = 20;
+// Definer typer for Experiences-komponentens props
+type ExperiencesProps = {
+  experienceOne: string;
+  experienceTwo: string;
+};
+
+// Experiences-komponenten definert utenfor App
+export function Experiences({ experienceOne, experienceTwo }: ExperiencesProps) {
+  return (
+    <div>
+      <Experience description={experienceOne} />
+      <Experience description={experienceTwo} />
+    </div>
+  )
+}
+
+// Hoved App-komponent
+function App() {
+  const student = 'Halgeir Geirson';
+  const degree = 'Bachelor IT';
+  const points = 180;
+  const experienceOne = 'Figma UI for customer X';
+  const experienceTwo = 'Website for customer Y';
+  const email = 'student@hiof.no';
 
   return (
-    <main>
-      <h1>Velkommen til Streaky, {name}. Du er {age + 1} år.</h1>
-    </main>
+    <div>
+      <Header student={student} degree={degree} points={points} />
+      <Experiences experienceOne={experienceOne} experienceTwo={experienceTwo} />
+      <Projects /> {/* Legger til Projects-komponenten her */}
+      <Contact email={email} />
+    </div>
   );
 }
 
