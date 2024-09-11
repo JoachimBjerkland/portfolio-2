@@ -1,60 +1,58 @@
 import { useState } from "react";
 
-// Definere Project-typen
-type Project = {
-  title: string;
-};
+// Definerer strukturen for erfaringer og prosjekter
+type ExperienceType = { name: string };
+type ProjectType = { title: string };
 
 // Header-komponent
-function Header({ student, degree, points }: { student: string; degree: string; points: number }) {
+function Header({ student }: { student: { name: string; degree: string; points: number } }) {
   return (
     <div>
-      <h1>{student}</h1>
+      <h1>{student.name}</h1>
       <p>
-        {degree} {points} studiepoeng
+        {student.degree} {student.points} studiepoeng
       </p>
     </div>
   );
 }
 
-// Experience-komponent
-function Experience({ description }: { description: string }) {
-  return <p>{description}</p>;
+// Fleksibel Experience-komponent som tar inn children
+function Experience({ children }: { children: React.ReactNode }) {
+  return <div>{children}</div>;
 }
 
-// Experiences-komponent
-function Experiences({ experienceOne, experienceTwo }: { experienceOne: string; experienceTwo: string }) {
+// Experiences-komponent som bruker map for å rendre erfaringer
+function Experiences({ experiences }: { experiences: ExperienceType[] }) {
   return (
     <div>
-      <Experience description={experienceOne} />
-      <Experience description={experienceTwo} />
+      {experiences.map((experience, index) => (
+        <Experience key={index}>
+          <p>{experience.name}</p>
+        </Experience>
+      ))}
     </div>
   );
 }
 
 // Contact-komponent
-function Contact({ email }: { email: string }) {
-  return <p>{email}</p>;
+function Contact({ student }: { student: { email: string } }) {
+  return <p>{student.email}</p>;
 }
 
-// Project-komponent
-function Project({ project }: { project: Project }) {
-  return <p>{project.title}</p>;
+// Fleksibel Project-komponent som tar inn children
+function Project({ children }: { children: React.ReactNode }) {
+  return <div>{children}</div>;
 }
 
-// Projects-komponent
-function Projects() {
-  const projects: Project[] = [
-    { title: "Prosjekt 1: Webdesign for Firma A" },
-    { title: "Prosjekt 2: Mobilapp for Firma B" },
-    { title: "Prosjekt 3: API for Firma C" },
-    { title: "Prosjekt 4: E-commerce nettsted for Firma D" },
-  ];
-
+// Projects-komponent som bruker map for å rendre prosjekter
+function Projects({ projects }: { projects: ProjectType[] }) {
   return (
     <>
       {projects.map((project, index) => (
-        <Project key={index} project={project} />
+        <Project key={index}>
+          <h3>{project.title}</h3>
+          <p>Dette er beskrivelsen for {project.title}.</p>
+        </Project>
       ))}
     </>
   );
@@ -62,20 +60,31 @@ function Projects() {
 
 // App-komponent
 function App() {
-  const student = 'Halgeir Geirson';
-  const degree = 'Bachelor IT';
-  const points = 180;
-  const experienceOne = 'Figma UI for customer X';
-  const experienceTwo = 'Website for customer Y';
-  const email = 'student@hiof.no';
+  const student = {
+    name: "Halgeir Geirson",
+    degree: "Bachelor IT",
+    points: 180,
+    email: "student@hiof.no",
+    experiences: [
+      { name: "Figma UI for customer X" },
+      { name: "Website for customer Y" },
+    ],
+  };
+
+  const projects = [
+    { title: "Prosjekt 1: Webdesign for Firma A" },
+    { title: "Prosjekt 2: Mobilapp for Firma B" },
+    { title: "Prosjekt 3: API for Firma C" },
+    { title: "Prosjekt 4: E-commerce nettsted for Firma D" },
+  ];
 
   return (
-    <div>
-      <Header student={student} degree={degree} points={points} />
-      <Experiences experienceOne={experienceOne} experienceTwo={experienceTwo} />
-      <Projects />
-      <Contact email={email} />
-    </div>
+    <main>
+      <Header student={student} />
+      <Experiences experiences={student.experiences} />
+      <Projects projects={projects} />
+      <Contact student={student} />
+    </main>
   );
 }
 
