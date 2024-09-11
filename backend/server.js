@@ -9,11 +9,10 @@ app.use(express.json());
 
 // Dummy prosjektdata
 const projects = [
-  { id: 1, title: 'Project Alpha', description: 'A groundbreaking project.', createdAt: '2024-01-01', category: 'Web Development' },
-  { id: 2, title: 'Project Beta', description: 'An innovative project.', createdAt: '2024-02-01', category: 'Mobile Development' },
-  { id: 3, title: 'Project Gamma', description: 'A revolutionary project.', createdAt: '2024-03-01', category: 'Data Science' },
-  { id: 4, title: 'Project Delta', description: 'A cutting-edge project.', createdAt: '2024-04-01', category: 'Artificial Intelligence' },
-  { id: 5, title: 'Project Epsilon', description: 'A transformative project.', createdAt: '2024-05-01', category: 'Cybersecurity' }
+  { id: 1, title: 'backend', description: 'Backend project.', createdAt: '2024-01-01', category: 'frontend' },
+  { id: 2, title: 'frontend', description: 'Frontend project.', createdAt: '2024-02-01', category: 'frontend' },
+  { id: 3, title: 'hono', description: 'hono project.', createdAt: '2024-03-01', category: 'Hono server' },
+  { id: 4, title: 'intro-react', description: 'intro-react project.', createdAt: '2024-04-01', category: 'React' },
 ];
 
 // Rute for prosjekter
