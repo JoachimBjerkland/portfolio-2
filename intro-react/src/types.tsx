@@ -15,4 +15,9 @@ export const actions = {
   remove: "remove",
 };
 
+export type ProjectType = {
+  title: string;
+  category: string;
+};
+
 export type Action = (typeof actions)[keyof typeof actions];
