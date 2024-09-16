@@ -1,28 +1,26 @@
 import React, { useEffect, useState } from 'react';
 import './App.css';
 
-// Definerer strukturen for erfaringer og prosjekter
+// Define types for experience and projects
 type ExperienceType = { name: string };
 type ProjectType = { id: number; title: string; description: string; createdAt: string; category: string };
 
-// Header-komponent
+// Header component
 function Header({ student }: { student: { name: string; degree: string; points: number } }) {
   return (
-    <div>
+    <div className="App-header">
       <h1>{student.name}</h1>
-      <p>
-        {student.degree} {student.points} studiepoeng
-      </p>
+      <p>{student.degree} {student.points} studiepoeng</p>
     </div>
   );
 }
 
-// Fleksibel Experience-komponent som tar inn children
+// Flexible Experience component
 function Experience({ children }: { children: React.ReactNode }) {
-  return <div>{children}</div>;
+  return <div className="Experience">{children}</div>;
 }
 
-// Experiences-komponent som bruker map for å rendre erfaringer
+// Experiences component
 function Experiences({ experiences }: { experiences: ExperienceType[] }) {
   return (
     <div>
@@ -39,7 +37,7 @@ function Experiences({ experiences }: { experiences: ExperienceType[] }) {
   );
 }
 
-// Contact-komponent med skjema for å sende melding
+// Contact component with form
 function Contact({ student }: { student: { email: string } }) {
   const [name, setName] = useState('');
   const [message, setMessage] = useState('');
@@ -47,12 +45,10 @@ function Contact({ student }: { student: { email: string } }) {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-
     if (!name || !message) {
       alert('Vennligst fyll inn både navn og melding.');
       return;
     }
-
     setSubmittedData({ name, message });
     setName('');
     setMessage('');
@@ -93,52 +89,42 @@ function Contact({ student }: { student: { email: string } }) {
   );
 }
 
-// Fleksibel Project-komponent som tar inn children
+// Project component
 function Project({ children }: { children: React.ReactNode }) {
-  return <div>{children}</div>;
+  return <div className="Project-card">{children}</div>;
 }
 
-// Projects-komponent som bruker map for å rendre prosjekter
+// Projects component
 function Projects({ projects }: { projects: ProjectType[] }) {
   return (
-    <>
-      {projects.length > 0 ? (
-        projects.map((project) => (
-          <Project key={project.id}>
-            <h3>{project.title}</h3>
-            <p>{project.description}</p>
-            <p><strong>Opprettet:</strong> {project.createdAt}</p>
-            <p><strong>Kategori:</strong> {project.category}</p>
-          </Project>
-        ))
-      ) : (
-        <p>Ingen prosjekter</p>
-      )}
-    </>
+    <div className="Projects-container">
+      {projects.map((project) => (
+        <Project key={project.id}>
+          <h3>{project.title}</h3>
+          <p>{project.description}</p>
+          <p><strong>Opprettet:</strong> {project.createdAt}</p>
+          <p><strong>Kategori:</strong> {project.category}</p>
+        </Project>
+      ))}
+    </div>
   );
 }
 
-// App-komponent
+// Main App component
 function App() {
   const [projects, setProjects] = useState<ProjectType[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    // Hent prosjekter fra backend
     fetch('http://localhost:5000/projects')
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
-        }
-        return response.json();
-      })
-      .then((data) => {
+      .then(response => response.json())
+      .then(data => {
         setProjects(data);
         setLoading(false);
       })
-      .catch((error) => {
-        setError(error.message);
+      .catch(err => {
+        setError(err.message);
         setLoading(false);
       });
   }, []);
@@ -148,23 +134,14 @@ function App() {
     degree: 'Bachelor IT',
     points: 180,
     email: 'student@hiof.no',
-    experiences: [
-      { name: 'Figma UI for customer X' },
-      { name: 'Website for customer Y' },
-    ],
+    experiences: [{ name: 'Figma UI for customer X' }, { name: 'Website for customer Y' }]
   };
 
   return (
-    <main>
+    <main className="App-content">
       <Header student={student} />
       <Experiences experiences={student.experiences} />
-      {loading ? (
-        <p>Laster prosjekter...</p>
-      ) : error ? (
-        <p>Feil ved lasting av prosjekter: {error}</p>
-      ) : (
-        <Projects projects={projects} />
-      )}
+      {loading ? <p>Laster prosjekter...</p> : error ? <p>Feil: {error}</p> : <Projects projects={projects} />}
       <Contact student={student} />
     </main>
   );
